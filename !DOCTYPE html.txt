@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Recommendation Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container input, .container button {
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            max-width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .recommendation {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e7f7e7;
+            border-radius: 5px;
+            display: none;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>Manga Recommendation Finder</h1>
+        <p>Enter the two most recent manga you've read, and we'll recommend a new one for you!</p>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <h2>Enter Your Latest Manga Reads</h2>
+        <p>Enter the titles of the two most recent manga you read:</p>
+
+        <!-- Form to Input Latest Manga -->
+        <input type="text" id="manga1" placeholder="Enter first manga title" />
+        <input type="text" id="manga2" placeholder="Enter second manga title" />
+        <button onclick="getRecommendation()">Get Recommendation</button>
+
+        <!-- Recommendation Section -->
+        <div class="recommendation" id="recommendation">
+            <h3>We Recommend:</h3>
+            <p id="recommended-manga"></p>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Manga Recommendation Finder. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        // Predefined recommendations based on user input (hardcoded data)
+        const mangaDatabase = {
+            "Naruto": ["One Piece", "Bleach", "Dragon Ball"],
+            "One Piece": ["Naruto", "Attack on Titan", "Fairy Tail"],
+            "Attack on Titan": ["Tokyo Ghoul", "Fullmetal Alchemist", "Naruto"],
+            "Tokyo Ghoul": ["Attack on Titan", "Death Note", "Black Clover"],
+            "Death Note": ["Tokyo Ghoul", "Hunter x Hunter", "One Punch Man"],
+            "Hunter x Hunter": ["Death Note", "Naruto", "Bleach"]
+        };
+
+        // Function to get manga recommendations
+        function getRecommendation() {
+            const manga1 = document.getElementById("manga1").value.trim();
+            const manga2 = document.getElementById("manga2").value.trim();
+            
+            // If both fields are empty, show an alert
+            if (!manga1 || !manga2) {
+                alert("Please enter the titles of the two manga you have read.");
+                return;
+            }
+
+            // Look for recommendations based on manga1 and manga2
+            const recommendations1 = mangaDatabase[manga1];
+            const recommendations2 = mangaDatabase[manga2];
+
+            if (recommendations1 && recommendations2) {
+                // Find common recommendations between the two manga
+                const commonRecommendations = recommendations1.filter(manga => recommendations2.includes(manga));
+                
+                let recommendationText = "No common recommendations found. How about trying these?\n";
+
+                if (commonRecommendations.length > 0) {
+                    recommendationText = "We recommend: " + commonRecommendations.join(", ");
+                } else {
+                    // If no common recommendations, suggest random options from both manga
+                    recommendationText = "We recommend: " + [
+                        ...new Set([...recommendations1, ...recommendations2])
+                    ].join(", ");
+                }
+
+                document.getElementById("recommended-manga").textContent = recommendationText;
+                document.getElementById("recommendation").style.display = "block";
+            } else {
+                alert("One or both manga titles are not in our database. Please try different titles.");
+            }
+        }
+    </script>
+
+</body>
+</html>
